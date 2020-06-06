@@ -1,0 +1,39 @@
+#!/bin/bash
+#SBATCH --job-name=vlcs%j
+#SBATCH --output=output_vlcs/job-masf-%j.out
+#SBATCH --error=log_vlcs/job-masf-%j.log
+#SBATCH --time=19:59:59
+#SBATCH --mem-per-cpu=5G
+#SBATCH --cpus-per-task=24
+
+source activate dgsml_gpu
+
+RUNNUM=1
+SEED=1
+RATE="0.2"
+DOMAIN=0
+NUM=3
+echo "Running: Run${RUNNUM} ${DOMAIN} ${SEED}"
+
+mkdir -p output_pacs
+mkdir -p log_pacs
+
+dgmsl_ROOT=".."
+FL_ROOT="${dgmsl_ROOT}/filelist/PACS_list/"
+LOG_ROOT="../test"
+LOG_DIR="${LOG_ROOT}/save${RATE}_${RUNNUM}"
+DATAROOT="../../data/PACS/"
+
+MBS=128
+
+EPOCH=30
+LR="0.001"
+META_LR="0.0001"
+BETA0="0.001"
+BETA1="0.01"
+BETA2="0.01"
+STEP=10	
+N_CLS=7
+DATASET='PACS'
+#DEV_NUM=3
+python ${dgmsl_ROOT}/mainGPU.py --dataset ${DATASET} --num_classes ${N_CLS} --target_domain ${DOMAIN}  --seed ${SEED} --filelist ${FL_ROOT}  --save_logs ${LOG_DIR} --save_models ${LOG_DIR}  --save_results ${LOG_DIR} --iteration ${EPOCH} --batch_size ${MBS}  --data_root $DATAROOT --num_train_domain ${NUM} --unlabeled_rate ${RATE} --lr ${LR} --meta_lr ${META_LR} --SSL_coef ${BETA0} --gloabl_coef ${BETA1} --class_wise_coef ${BETA2} --save_step ${STEP}

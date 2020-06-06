@@ -1,0 +1,45 @@
+#!/bin/bash
+#SBATCH --job-name=pacs%j
+#SBATCH --output=output_pacs/job-pacs-%j.log
+#SBATCH --error=log_pacs/job-pacs-%j.log
+#SBATCH --time=11:59:59
+#SBATCH --mem-per-cpu=5G
+#SBATCH --cpus-per-task=24
+#SBATCH --array=1-80
+
+source activate dgsml_gpu
+
+INDEXFILE=./samples_pacs.list
+
+INDEX=$(awk "NR==$SLURM_ARRAY_TASK_ID" $INDEXFILE)
+INDEX_ARR=(`echo ${INDEX}`)
+RUNNUM=${INDEX_ARR[0]}
+SEED=${INDEX_ARR[1]}
+RATE=${INDEX_ARR[2]}
+DOMAIN=${INDEX_ARR[3]}
+
+
+echo "Running: Run${RUNNUM} ${DOMAIN} ${SEED}"
+
+DOM=("photo" "art_painting" "cartoon" "sketch")
+
+dgmsl_ROOT=".."
+FL_ROOT="${dgmsl_ROOT}/filelist/PACS_list/"
+LOG_ROOT="../pacs_res"
+LOG_DIR="${LOG_ROOT}/save${RATE}_${RUNNUM}_${DOM[${DOMAIN}]}"
+DATAROOT="../../data/PACS/"
+
+MBS=128
+
+EPOCH=1000
+LR="0.001"
+META_LR="0.0001"
+BETA0="0.01"
+BETA1="0.1"
+BETA2="0.01"
+STEP=10	
+N_CLS=7
+NUM=3
+DATASET='PACS'
+WEIGHT_DECAY="0.0005"
+python ${dgmsl_ROOT}/mainGPU.py --dataset ${DATASET} --num_classes ${N_CLS} --target_domain ${DOMAIN}  --seed ${SEED} --filelist ${FL_ROOT}  --save_logs ${LOG_DIR} --save_models ${LOG_DIR}  --save_results ${LOG_DIR} --iteration ${EPOCH} --batch_size ${MBS}  --data_root $DATAROOT --num_train_domain ${NUM} --unlabeled_rate ${RATE} --lr ${LR} --meta_lr ${META_LR} --SSL_coef ${BETA0} --gloabl_coef ${BETA1} --class_wise_coef ${BETA2} --save_step ${STEP} --weight_decay ${WEIGHT_DECAY}
