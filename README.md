@@ -38,11 +38,21 @@ This will create a conda environment called `dgsml_gpu`.
 
 And to create the environment required for DGSML-CPU (resnet only) run:
 ```
-conda env create -f dgsml-resnet-cpu/environment/dgmsl_cpu.yml
+conda env create -f dgsml-resnet-cpu/environment/dgsml_cpu.yml
 ```
 This will create a conda environment called `dgsml_cpu`.
 
 After the successful installation of the packages into environmet you would be able to load them using `conda activate`.
+
+### Dataset
+We used PACS and VLCS benchmarks to evaluate the performance of DGSML and the studied baselines. 
+PACS was obtained from [here](http://www.eecs.qmul.ac.uk/~dl307/project_iccv2017) and VLCS from [here](https://github.com/fmcarlucci/JigenDG).
+Before running DGSML, unzip the data using following commands:
+```
+cd data/DATASET_NAME/
+for F in *.tar.gz; do tar -xzvf ${F}; done
+```
+Where `DATASET_NAME` is either PACS or VLCS.
 
 # Test Run
 To run a small test:
