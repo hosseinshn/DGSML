@@ -1,0 +1,44 @@
+#!/bin/bash
+#SBATCH --job-name=DGMSL
+#SBATCH --output=output_pacs/job-dgmsl-%j.out
+#SBATCH --error=log_pacs/job-dgmsl-%j.log
+#SBATCH --time=UNLIMITED
+#SBATCH --mem-per-cpu=11G
+#SBATCH --cpus-per-task=16
+#SBATCH --array=1-80
+
+conda activate dgsml_cpu
+
+INDEXFILE=./samples_pacs.list
+
+
+INDEX=$(awk "NR==$SLURM_ARRAY_TASK_ID" $INDEXFILE)
+INDEX_ARR=(`echo ${INDEX}`)
+RUNNUM=${INDEX_ARR[0]}
+SEED=${INDEX_ARR[1]}
+RATE=${INDEX_ARR[2]}	 
+EXPNUM=${INDEX_ARR[3]}
+DOMAIN=${INDEX_ARR[4]}
+
+echo "Running: Run${RUNNUM} ${DOMAIN} ${SEED}"
+
+
+dgmsl_ROOT=".."
+FL_ROOT="${dgmsl_ROOT}/filelist/PACS_list/"
+LOG_ROOT="../pacs_res_resnet"
+LOG_DIR="${LOG_ROOT}/save${RATE}_${RUNNUM}_${DOM[${DOMAIN}]}"
+DATAROOT="../../data/PACS/"
+
+MBS=128
+
+EPOCH=1000
+LR="0.001"
+META_LR="0.0001"
+BETA0="0.01"
+BETA1="0.1"
+STEP=10
+N_CLS=7
+NUM=3
+DATASET='PACS'
+WEIGHT_DECAY="0.0005"
+python ${dgmsl_ROOT}/mainResnetv1.py --dataset ${DATASET} --num_classes ${N_CLS} --target_domain ${DOMAIN}  --seed ${SEED} --filelist ${FL_ROOT}  --save_logs ${LOG_DIR} --save_models ${LOG_DIR}  --save_results ${LOG_DIR} --iteration ${EPOCH} --batch_size ${MBS}  --data_root $DATAROOT --num_train_domain ${NUM} --unlabeled_rate ${RATE} --lr ${LR} --meta_lr ${META_LR} --SSL_coef ${BETA0} --gloabl_coef ${BETA1} --class_wise_coef ${BETA2} --save_step ${STEP} --weight_decay ${WEIGHT_DECAY}
