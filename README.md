@@ -95,6 +95,8 @@ sbatch test_PACS.bs
 
 # Output Files
 The structure of an output directory (e.g. `save0.95_1_photo`) after a successful run will be as follows:
+In this example 0.95 is the rate of unlabeled samples, 1 is the run id (a number between 1 to 5 corresponding to an independent run with a specific seed value), and photo is the target domain.
+
 ```
 save0.95_1_photo
 ├── args.txt            # Input arguments passed to DGSML and training losses
