@@ -20,7 +20,7 @@ DGSML is the first method of semi-supervised meta learning that employs two nove
 
 To get the source files of DGSML you need to clone into its repository:
 ```
-git clone https://github.com/dgsml/DomainGeneralization.git
+git clone https://github.com/hosseinshn/DGSML.git
 ```
 
 ### Conda environment
