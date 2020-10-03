@@ -12,7 +12,8 @@ https://arxiv.org/pdf/2009.12658.pdf
 3. [Experiments](#experiments)
 4. [Output Files](#output-files)
 5. [Results](#results)
-6. [References](#references)
+6. [Citation](#citation)
+7. [References](#references)
 
 # Installation
 
